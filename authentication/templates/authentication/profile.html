@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Hello, {{ request.user.get_full_name }}</h1>
+    <p>Your role : {{ request.user.role }}</p>
+    <a href="{% url 'sign-out' %}">Logout</a>
+{% endblock %}

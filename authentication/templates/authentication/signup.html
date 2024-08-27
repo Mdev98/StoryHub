@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{ block.super }} | Register {% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static './authentication.css' %}">
+{% endblock %}
+
+{% block header %}
+
+    {% include 'components/auth-header.html' %}
+
+{% endblock %}
+
+{% block content %}
+
+    <main>
+        <div class="container">
+            <div class="form">
+                <h2>Register</h2>
+                <form method="post" action="{% url 'sign-up' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+
+                        <label for="f_name">First Name : </label>
+                        <input id="f_name" name="f_name" type="text"
+                               hx-post="{% url 'validate-fname' %}"
+                               hx-trigger="change"
+                               hx-sync="closest form:abort"
+                               hx-target="#error-fname" required>
+                        <p id="error-fname" style="color: red;"></p>
+
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="l_name">Last Name : </label>
+                        <input id="l_name" name="l_name" type="text"
+                               hx-post="{% url 'validate-lname' %}"
+                               hx-trigger="change"
+                               hx-sync="closest form:abort"
+                               hx-target="#error-lname" required>
+                        <p id="error-lname" style="color: red;"></p>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email : </label>
+                        <input id="email" name="email" type="email"
+                               hx-post="{% url 'validate-email' %}"
+                               hx-trigger="change"
+                               hx-sync="closest form:abort"
+                               hx-target="#error-email" required>
+                        <p id="error-email" style="color: red;"></p>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password : </label>
+                        <input id="password" name="password" type="password"
+                               hx-post="{% url 'validate-password' %}"
+                               hx-trigger="change"
+                               hx-sync="closest form:abort"
+                               hx-target="#error-password" required>
+                        <p id="error-password" style="color: red;"></p>
+
+                    </div>
+                    <button type="submit" id="submit-btn" class="btn btn-submit disabled" disabled>Submit</button>
+                </form>
+            </div>
+            <a href="{% url 'sign-in' %}" class="action">
+                Already have an account? Login
+            </a>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener("htmx:afterRequest", function (evt) {
+            const errors = Array.from(document.querySelectorAll('p[id^="error-"]')).some(p => p.textContent);
+
+            document.getElementById('submit-btn').disabled = errors;
+            document.getElementById('submit-btn').classList.toggle('disabled', errors);
+        });
+    </script>
+
+{% endblock %}

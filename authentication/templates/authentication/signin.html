@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{ block.super }} | Register {% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static './authentication.css' %}">
+{% endblock %}
+
+{% block header %}
+
+    {% include 'components/auth-header.html' %}
+
+{% endblock %}
+
+{% block content %}
+
+    <main x-data="{ open: false }">
+
+        <div class="container">
+            <div id="message" style="color : #A2CA71; font-size: 1.2rem"></div>
+            <div class="form">
+                <h2>Login</h2>
+                <form method="post" action="{% url 'sign-in' %}">
+                    {% csrf_token %}
+                    <p style="color : red">{{ error }}</p>
+
+                    <div class="form-group">
+                        <label for="email">Email : </label>
+                        <input id="email" name="email" type="email"
+                               hx-post="{% url 'validate-email' %}"
+                               hx-trigger="change"
+                               hx-sync="closest form:abort"
+                               hx-target="#error-email" required>
+                        <input type="hidden" name="action" value="signin">
+                        <p id="error-email" style="color: red;"></p>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password : </label>
+                        <input id="password" name="password" type="password"
+                               hx-post="{% url 'validate-password' %}"
+                               hx-trigger="change"
+                               hx-sync="closest form:abort"
+                               hx-target="#error-password" required>
+                        <p id="error-password" style="color: red;"></p>
+
+                    </div>
+                    <button type="submit" id="submit-btn" class="btn btn-submit disabled" disabled>Submit</button>
+                </form>
+            </div>
+            <a href="{% url 'sign-up' %}" class="action">
+                Don't have an account? Register
+            </a>
+            <a href="" class="action" @click.prevent="open = true">Forgot Password?</a>
+        </div>
+
+        <div class="modal" x-show="open" x-cloak>
+            <div class="modal-content" @click.away="open = false">
+                <span class="close" @click="open = false">&times;</span>
+                <h2>Reset Password</h2>
+                <p>Please enter your email address to reset your password.</p>
+                <form
+                        hx-post="{% url 'forgot-password' %}"
+                        hx-target="#message"
+                        hx-swap="innerHTML"
+                        hx-trigger="submit"
+
+                >
+                     {% csrf_token %}
+                    <div class="form-group">
+                        <label for="email_">Email : </label>
+                        <input id="email_" name="email" type="email"
+                               hx-post="{% url 'validate-email' %}"
+                               hx-trigger="change"
+                               hx-sync="closest form:abort"
+                               hx-target="#error-forgot-email" required>
+                        <input type="hidden" name="action" value="forgot-password">
+                        <p id="error-forgot-email" style="color: red;"></p>
+                    </div>
+                    <button
+                            type="submit"  class="btn btn-submit"
+                            hx-on:click="handleSubmit()"
+                            @click="open = false">Submit</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener("htmx:afterRequest", function (evt) {
+            const errors = Array.from(document.querySelectorAll('p[id^="error-"]')).some(p => p.textContent);
+
+            console.log(errors);
+
+            document.getElementById('submit-btn').disabled = errors;
+            document.getElementById('submit-btn').classList.toggle('disabled', errors);
+        });
+
+        function handleSubmit() {
+            // Handle the form submission here
+            alert('Password reset link has been sent to your email.');
+            this.open = false; // Close the modal
+        }
+    </script>
+
+{% endblock %}
