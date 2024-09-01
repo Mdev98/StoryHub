@@ -56,7 +56,6 @@ venv.bak/
 
 # Media and static files
 media/
-staticfiles/
 
 # Unit test / coverage reports
 htmlcov/
