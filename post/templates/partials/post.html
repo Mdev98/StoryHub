@@ -1,0 +1,35 @@
+<div class="story-item new" id="story-item-{{ story.id }}" hx-on::load="scrollToStory()">
+    <div class="profile">
+        <img src="https://avatar.iran.liara.run/public" alt="Profile">
+        <span class="profile_name">{{ story.author.get_full_name }}</span>
+        {% if request.user == story.author %}
+            <span class="close"
+                  hx-delete="{% url 'delete' story.id %}"
+                  hx-trigger="click"
+                  hx-target="#story-item-{{ story.id }}"
+                  hx-swap="innerHTML transition:true"
+            >&times;</span>
+        {% endif %}
+    </div>
+    <h3>{{ story.title }}</h3>
+    <p>
+        {{ story.content }}
+    </p>
+    <div class="tags">
+
+        {% if story.get_tags %}
+            <span># {{ story.get_tags }}</span>
+        {% endif %}
+
+    </div>
+    <div class="stats">
+        <p>
+            <span>♥️</span>
+            <span id="story-like">{{ story.get_like_count }}</span> Likes
+        </p>
+        <p>
+            <span>💬</span>
+            <span>{{ story.get_comment_count }}</span> Comments
+        </p>
+    </div>
+</div>

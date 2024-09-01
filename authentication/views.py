@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout, get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponse
@@ -47,16 +48,18 @@ def sign_in(request):
             return render(request, 'authentication/signin.html', {'error': 'Incorrect password'})
 
         login(request, user)
-        return redirect('profile')
+        return redirect('index')
 
     return render(request, 'authentication/signin.html')
 
 
+@login_required
 def sign_out(request):
     logout(request)
     return redirect('sign-in')
 
 
+@login_required
 def profile(request):
     return render(request, 'authentication/profile.html')
 
@@ -69,9 +72,9 @@ def validate_email(request):
 
     if not re.match(email_regex, email):
         return HttpResponse('Invalid email address')
-    if User.objects.filter(email=email).exists() and action == 'signup':
+    if User.objects.filter_(email=email).exists() and action == 'signup':
         return HttpResponse('Email already exists')
-    if not User.objects.filter(email=email).exists() and action == 'forgot-password':
+    if not User.objects.filter_(email=email).exists() and action == 'forgot-password':
         return HttpResponse('Email does not exist')
 
     return HttpResponse('')
@@ -101,7 +104,7 @@ def validate_lname(request):
 def forgot_password(request):
     email = request.POST['email']
     if request.method == 'POST':
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter_(email=email).first()
         user.send_password_reset_email(request)
     return HttpResponse('Email Sent')
 

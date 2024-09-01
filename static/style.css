@@ -9,6 +9,24 @@ a {
     color: #111;
 }
 
+li {
+    list-style: none;
+}
+
 body {
     font-family: 'poppins', sans-serif;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.logo h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    font-family: 'Matemasie', sans-serif;
+    color: #111;
 }

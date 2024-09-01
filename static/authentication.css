@@ -86,8 +86,6 @@ header {
 }
 
 .btn-submit.disabled {
-    background-color: #ccc;
-    color: #fff;
     cursor: not-allowed;
 }
 

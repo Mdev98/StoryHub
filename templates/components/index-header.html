@@ -1,0 +1,23 @@
+<header>
+    <div class="logo">
+        <h1>StoryHub</h1>
+    </div>
+    <div class="settings">
+        <div class="profile" tabindex="0">
+            <img src="https://avatar.iran.liara.run/public" alt="Profile">
+            <span class="profile_name">{{ request.user.get_full_name }}</span>
+            <button id="dropdown-btn" class="dropdown-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" id="down-arrow">
+                    <path d="M22.782 13.8 17 19.582 11.218 13.8a1 1 0 0 0-1.414 1.414L16.29 21.7a.992.992 0 0 0 .71.292.997.997 0 0 0 .71-.292l6.486-6.486a1 1 0 0 0-1.414-1.414z"></path>
+                </svg>
+            </button>
+            <div class="dropdown">
+                <ul>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a id="danger" href="{% url 'sign-out' %}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</header>

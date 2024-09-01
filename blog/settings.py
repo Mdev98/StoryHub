@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
+    'post'
 ]
 
 MIDDLEWARE = [
@@ -127,4 +128,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # In settings.py
 AUTH_USER_MODEL = 'authentication.User'
+
+LOGIN_URL = 'sign-in'
 

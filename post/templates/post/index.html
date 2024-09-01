@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    <link rel="stylesheet" href="{% static './style.css' %}">
+    <link rel="stylesheet" href="{% static './index.css' %}">
+{% endblock %}
+{% block title %}
+    StoryHub | Share your story
+{% endblock %}
+{% block header %}
+    {% include 'components/index-header.html' %}
+{% endblock %}
+{% block content %}
+    <main id="filter-by">
+        <section class="empty"></section>
+        <section class="story">
+            <div class="story-form">
+                <h2>Share your story</h2>
+                <form
+                        hx-trigger="submit"
+                        hx-post="{% url 'create' %}"
+                        hx-target="#list"
+                        hx-swap="afterbegin"
+                >
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title"
+                               hx-post="{% url 'validate-title' %}"
+                               hx-trigger="change"
+                               hx-sync="closest form:abort"
+                               hx-target="#error-title"
+                               hx-swap="outerHTML" required>
+                        <p id="error-title" style="color: red;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Story</label>
+                        <textarea name="content" id="content"
+                                  hx-post="{% url 'validate-content' %}"
+                                  hx-trigger="change"
+                                  hx-sync="closest form:abort"
+                                  hx-target="#error-content"
+                                  hx-swap="outerHTML" required
+                        ></textarea>
+                        <p id="error-content" style="color: red;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="tag">Tag</label>
+                        <input type="text" id="tag" name="tag"
+                               hx-post="{% url 'validate-tag' %}"
+                               hx-trigger="change"
+                               hx-sync="closest form:abort"
+                               hx-target="#error-tag"
+                               hx-swap="outerHTML" required>
+                        <p id="error-tag" style="color: red;"></p>
+                    </div>
+                    <button class="btn btn-submit disabled" id="submit-btn">Share</button>
+                </form>
+            </div>
+            <div class="story-list" id=>
+                <h2>Stories</h2>
+                <div id="list">
+
+                    {% for story in stories %}
+
+                        <div class="story-item" id="story-item-{{ story.id }}">
+                            <div class="profile">
+                                <img src="https://avatar.iran.liara.run/public" alt="Profile">
+                                <span class="profile_name">{{ story.author.get_full_name }}</span>
+                                {% if request.user == story.author %}
+                                    <span class="close"
+                                          hx-delete="{% url 'delete' story.id %}"
+                                          hx-trigger="click"
+                                          hx-target="#story-item-{{ story.id }}"
+                                          hx-swap="innerHTML transition:true"
+                                    >&times;</span>
+                                {% endif %}
+                            </div>
+                            <h3><a href="{% url 'detail' story.id %}">{{ story.title }}</a></h3>
+                            <p>
+                                {{ story.content }}
+                            </p>
+                            <div class="tags">
+
+                                {% if story.get_tags %}
+                                    <span># {{ story.get_tags }}</span>
+                                {% endif %}
+
+                            </div>
+                            <div class="stats">
+                                <p>
+                                    <span
+                                            hx-post="{% url 'like' story.id %}"
+                                            hx-trigger="click"
+                                            hx-target="#story-like-{{ story.id }}"
+                                            hx-swap="outerHTML"
+                                            class="like-btn"
+                                    >♥️</span>
+                                    <span id="story-like-{{ story.id }}">{{ story.get_like_count }}</span> Likes
+                                </p>
+                                <p>
+                                    <span>💬</span>
+                                    <span>{{ story.get_comment_count }}</span> Comments
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </section>
+
+        <aside class="categories">
+            <div class="tags">
+                <h2>Tags</h2>
+                <ul>
+
+                    {% for tag in most_popular_tag %}
+                        {% if tag.get_story_count > 0 %}
+                            <li>
+                                <a
+                                        hx-get="{% url 'list-by' tag.slug %}"
+                                        hx-trigger="click"
+                                        hx-target="#filter-by"
+                                        hx-swap="innerHTML"
+                                ># {{ tag.name }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="top">
+                <h2>Top Cas</h2>
+                <ul>
+
+                    {% for story in top_stories %}
+                        <li>
+                            <a href="{% url 'detail' story.id %}">{{ story.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+        <script>
+            document.addEventListener('htmx:configRequest', (event) => {
+                event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+            });
+
+            function scrollToStory() {
+                const newPost = document.querySelector('.new');
+                const inputs = document.querySelectorAll('input');
+                const textarea = document.querySelector('textarea');
+                inputs.forEach(input => input.value = '');
+                textarea.value = '';
+                if (newPost) {
+                    newPost.scrollIntoView({behavior: 'smooth'});
+                }
+            }
+
+            function scrollToStories() {
+                const list = document.getElementById('list').firstElementChild;
+                list.scrollIntoView({behavior: 'smooth'});
+            }
+
+            document.addEventListener("htmx:afterRequest", function (evt) {
+                const errors = Array.from(document.querySelectorAll('p[id^="error-"]')).some(p => p.textContent);
+
+                document.getElementById('submit-btn').disabled = errors;
+                document.getElementById('submit-btn').classList.toggle('disabled', errors);
+            });
+        </script>
+    </main>
+{% endblock %}
