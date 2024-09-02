@@ -30,7 +30,7 @@ def sign_up(request):
         user.save()
 
         login(request, user)
-        return redirect('profile')
+        return redirect('index')
     return render(request, 'authentication/signup.html')
 
 
