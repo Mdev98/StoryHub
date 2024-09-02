@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/tmp/db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'dmFLgiGotCzexxfqPwYZASkRpHOwvbTm',
+        'HOST': 'autorack.proxy.rlwy.net',
+        'PORT': '54818',
     }
 }
 
