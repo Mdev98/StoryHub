@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render, redirect
@@ -109,11 +111,19 @@ def validate_title(request):
     title = request.POST.get('title', '')
 
     story = Story.objects.filter(title=title).exists()
-
-    print(story)
-
-    if not title.isalpha():
-        return HttpResponse("<p id='error-title' style='color: red;'>Invalid Title</p>")
+    
+    # Check if title is empty
+    if not title:
+        return HttpResponse("<p id='error-title' style='color: red;'>Title cannot be empty.</p>")
+    
+    # Check title length (e.g., must be between 5 and 100 characters)
+    if len(title) < 3 or len(title) > 100:
+        return HttpResponse("<p id='error-title' style='color: red;'>Title must be between 3 and 100 characters.</p>")
+    
+    # Check if title contains only letters, numbers, and spaces (you can adjust this regex)
+    if not re.match(r'^[a-zA-Z0-9 ]+$', title):
+        return HttpResponse("<p id='error-title' style='color: red;'>Title can only contain letters, numbers, and spaces</p>")
+    
     if story:
         return HttpResponse("<p id='error-title' style='color: red;'>Title already exists</p>")
 
@@ -122,9 +132,10 @@ def validate_title(request):
 
 def validate_content(request):
     content = request.POST.get('content', '')
+    
+    if not content:
+        return HttpResponse("<p id='error-content' style='color: red;'>Content cannot be empty.</p>")
 
-    if not content.isalpha():
-        return HttpResponse("<p id='error-content' style='color: red;'>Invalid content</p>")
 
     return HttpResponse("<p id='error-content' style='color: red;'></p>")
 
