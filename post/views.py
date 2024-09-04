@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render, redirect
@@ -124,6 +126,13 @@ def validate_title(request):
 
     if not title.isalpha():
         return HttpResponse("<p id='error-title' style='color: red;'>Invalid Title</p>")
+    
+    if len(title) < 3 or len(title) > 100:
+        return HttpResponse("<p id='error-title' style='color: red;'>Title must be between 3 and 100 characters.</p>")
+    
+    if not re.match(r'^[a-zA-Z0-9 ]+$', title):
+        return HttpResponse("<p id='error-title' style='color: red;'>Title can only contain letters, numbers, and spaces</p>")
+    
     if story:
         return HttpResponse("<p id='error-title' style='color: red;'>Title already exists</p>")
 
@@ -139,6 +148,7 @@ def validate_content(request):
 
     if not content.isalpha():
         return HttpResponse("<p id='error-content' style='color: red;'>Invalid content</p>")
+      
 
     return HttpResponse("<p id='error-content' style='color: red;'></p>")
 
@@ -189,6 +199,8 @@ def filter_(request, slug):
     top_stories = Story.get_top_stories()[0:5]
     most_popular_tag = Tag.get_most_popular_tag()[:5]
 
+
     return render(request, 'post/filter.html',
                   {'stories': stories, 'tag': tag, 'tags': tags, 'top_stories': top_stories,
                    'most_popular_tag': most_popular_tag})
+
