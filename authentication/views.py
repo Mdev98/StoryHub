@@ -30,7 +30,7 @@ def sign_up(request):
         user.save()
 
         login(request, user)
-        return redirect('profile')
+        return redirect('index')
     return render(request, 'authentication/signup.html')
 
 
@@ -57,11 +57,6 @@ def sign_in(request):
 def sign_out(request):
     logout(request)
     return redirect('sign-in')
-
-
-@login_required
-def profile(request):
-    return render(request, 'authentication/profile.html')
 
 
 def validate_email(request):
