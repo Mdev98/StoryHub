@@ -26,12 +26,16 @@ def index(request):
         'most_popular_tag': most_popular_tag
     })
 
+
 @login_required
 def create(request):
     if request.method == 'POST':
-        title = request.POST['title']
-        content = request.POST['content']
+        title = request.POST['title'].strip()
+        content = request.POST['content'].strip()
         tag = request.POST.getlist('tag')
+
+        if not title or not content or not tag:
+            return HttpResponse(status=400)
 
         story = Story.objects.create(
             title=title,
@@ -43,11 +47,14 @@ def create(request):
             slug = slugify(t)
             tag, _ = Tag.objects.get_or_create(name=t, slug=slug)
 
+            tag = tag.strip()
+
             story.tag.add(tag)
 
         story.save()
 
         return render(request, 'partials/post.html', {'story': story})
+
 
 @login_required
 def detail(request, story_id):
@@ -68,6 +75,7 @@ def detail(request, story_id):
 
 def edit(request, story_id):
     pass
+
 
 @login_required
 def delete(request, story_id):
@@ -106,11 +114,13 @@ def like(request, story_id):
 
 
 def validate_title(request):
-    title = request.POST.get('title', '')
+    title = request.POST.get('title', '').strip().replace(" ", "")
+
+    if not title:
+        return HttpResponse("<p id='error-title' style='color: red;'>Invalid Title</p>")
 
     story = Story.objects.filter(title=title).exists()
 
-    print(story)
 
     if not title.isalpha():
         return HttpResponse("<p id='error-title' style='color: red;'>Invalid Title</p>")
@@ -121,7 +131,11 @@ def validate_title(request):
 
 
 def validate_content(request):
-    content = request.POST.get('content', '')
+    content = request.POST.get('content', '').strip()
+
+    if not content:
+        return HttpResponse("<p id='error-content' style='color: red;'>Invalid content</p>")
+
 
     if not content.isalpha():
         return HttpResponse("<p id='error-content' style='color: red;'>Invalid content</p>")
@@ -137,10 +151,14 @@ def validate_tag(request):
 
     return HttpResponse("<p id='error-tag' style='color: red;'></p>")
 
+
 @login_required
 def comment(request, obj_id):
     if request.method == 'POST':
-        content = request.POST.get('comment', '')
+        content = request.POST.get('comment', '').strip()
+
+        if not content:
+            return HttpResponse(status=400)
 
         comment_ = Comment.objects.create(
             content=content,
@@ -160,6 +178,7 @@ def comment(request, obj_id):
 
         return HttpResponse("Comment deleted")
 
+
 @login_required
 def filter_(request, slug):
     tag = Tag.objects.get(slug=slug)
@@ -170,4 +189,6 @@ def filter_(request, slug):
     top_stories = Story.get_top_stories()[0:5]
     most_popular_tag = Tag.get_most_popular_tag()[:5]
 
-    return render(request, 'post/filter.html', {'stories': stories, 'tag': tag, 'tags': tags, 'top_stories': top_stories, 'most_popular_tag': most_popular_tag})
+    return render(request, 'post/filter.html',
+                  {'stories': stories, 'tag': tag, 'tags': tags, 'top_stories': top_stories,
+                   'most_popular_tag': most_popular_tag})

@@ -14,7 +14,7 @@
     <main>
         <section class="empty"></section>
         <section class="story">
-            <div class="story-list" >
+            <div class="story-list">
                 <div style="display: flex; align-items: center">
                     <a href="{% url 'index' %}">
 
@@ -86,12 +86,17 @@
                                             <img src="https://avatar.iran.liara.run/public" alt="Profile">
                                             <span class="profile_name">{{ comment.author.get_full_name }}</span>
 
-                                            <span class="close"
-                                                  hx-delete="{% url 'comment' comment.id %}"
-                                                  hx-trigger="click"
-                                                  hx-target="#comment-item-{{ comment.id }}"
-                                                  hx-swap="innerHTML transition:true"
-                                            >&times;</span>
+
+                                            {% if request.user == comment_.author %}
+
+                                                <span class="close"
+                                                      hx-delete="{% url 'comment' comment_.id %}"
+                                                      hx-trigger="click"
+                                                      hx-target="#comment-item-{{ comment_.id }}"
+                                                      hx-swap="innerHTML transition:true"
+                                                >&times;</span>
+
+                                            {% endif %}
 
                                         </div>
                                     </div>

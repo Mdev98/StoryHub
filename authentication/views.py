@@ -83,14 +83,14 @@ def validate_password(request):
 
 
 def validate_fname(request):
-    f_name = request.POST['f_name']
+    f_name = request.POST['f_name'].strip().replace(" ", "")
     if not f_name.isalpha():
         return HttpResponse('First name must contain only alphabets')
     return HttpResponse('')
 
 
 def validate_lname(request):
-    l_name = request.POST['l_name']
+    l_name = request.POST['l_name'].strip().replace(" ", "")
     if not l_name.isalpha():
         return HttpResponse('Last name must contain only alphabets')
     return HttpResponse('')
