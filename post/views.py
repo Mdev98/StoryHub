@@ -121,7 +121,6 @@ def validate_title(request):
 
     story = Story.objects.filter(title=title).exists()
 
-
     if not title.isalpha():
         return HttpResponse("<p id='error-title' style='color: red;'>Invalid Title</p>")
     if story:
@@ -135,7 +134,6 @@ def validate_content(request):
 
     if not content:
         return HttpResponse("<p id='error-content' style='color: red;'>Invalid content</p>")
-
 
     if not content.isalpha():
         return HttpResponse("<p id='error-content' style='color: red;'>Invalid content</p>")
