@@ -5,6 +5,8 @@ from django.template.defaultfilters import slugify
 
 from .models import Story, Tag, Comment, Like
 
+import html
+
 
 # Create your views here.
 @login_required
@@ -30,8 +32,8 @@ def index(request):
 @login_required
 def create(request):
     if request.method == 'POST':
-        title = request.POST['title'].strip()
-        content = request.POST['content'].strip()
+        title = request.POST['title']
+        content = request.POST['content']
         tag = request.POST.getlist('tag')
 
         if not title or not content or not tag:
@@ -47,7 +49,7 @@ def create(request):
             slug = slugify(t)
             tag, _ = Tag.objects.get_or_create(name=t, slug=slug)
 
-            tag = tag.strip()
+            print(tag, _)
 
             story.tag.add(tag)
 
@@ -71,10 +73,6 @@ def detail(request, story_id):
         'top_stories': top_stories,
         'most_popular_tag': most_popular_tag
     })
-
-
-def edit(request, story_id):
-    pass
 
 
 @login_required
@@ -111,6 +109,52 @@ def like(request, story_id):
         like_.delete()
 
     return HttpResponse(f"<span id='story-like-{like_.story.id}'>{like_.story.get_like_count()}</span>")
+
+
+@login_required
+def comment(request, obj_id):
+    if request.method == 'POST':
+        content = request.POST.get('comment', '').strip()
+
+        content = validate_comment(content)
+
+        if not content:
+            return HttpResponse(status=400)
+
+        comment_ = Comment.objects.create(
+            content=content,
+            author=request.user,
+            story_id=obj_id
+        )
+
+        comment_.save()
+
+        return render(request, 'partials/comment.html', {'comment_': comment_})
+
+    if request.method == 'DELETE':
+        comment_ = Comment.objects.get(id=obj_id)
+
+        if request.user != comment_.author:
+            return HttpResponse(status=403)
+
+        comment_.delete()
+
+        return HttpResponse("Comment deleted")
+
+
+@login_required
+def filter_(request, slug):
+    tag = Tag.objects.get(slug=slug)
+    stories = tag.stories.all()
+
+    tags = Tag.objects.all()
+
+    top_stories = Story.get_top_stories()[0:5]
+    most_popular_tag = Tag.get_most_popular_tag()[:5]
+
+    return render(request, 'post/filter.html',
+                  {'stories': stories, 'tag': tag, 'tags': tags, 'top_stories': top_stories,
+                   'most_popular_tag': most_popular_tag})
 
 
 def validate_title(request):
@@ -150,43 +194,7 @@ def validate_tag(request):
     return HttpResponse("<p id='error-tag' style='color: red;'></p>")
 
 
-@login_required
-def comment(request, obj_id):
-    if request.method == 'POST':
-        content = request.POST.get('comment', '').strip()
 
-        if not content:
-            return HttpResponse(status=400)
-
-        comment_ = Comment.objects.create(
-            content=content,
-            author=request.user,
-            story_id=obj_id
-        )
-
-        print(comment_.content)
-
-        comment_.save()
-
-        return render(request, 'partials/comment.html', {'comment_': comment_})
-
-    if request.method == 'DELETE':
-        comment_ = Comment.objects.get(id=obj_id)
-        comment_.delete()
-
-        return HttpResponse("Comment deleted")
-
-
-@login_required
-def filter_(request, slug):
-    tag = Tag.objects.get(slug=slug)
-    stories = tag.stories.all()
-
-    tags = Tag.objects.all()
-
-    top_stories = Story.get_top_stories()[0:5]
-    most_popular_tag = Tag.get_most_popular_tag()[:5]
-
-    return render(request, 'post/filter.html',
-                  {'stories': stories, 'tag': tag, 'tags': tags, 'top_stories': top_stories,
-                   'most_popular_tag': most_popular_tag})
+def validate_comment(content: str) -> str:
+    # Escape the HTML entities to remove any malicious code or script
+    return html.escape(content)

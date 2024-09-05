@@ -1,0 +1,19 @@
+{
+    "builds": [
+        {
+            "src": "blog/wsgi.py",
+            "use": "@vercel/python",
+            "config": {
+                "maxLambdaSize": "15mb",
+                "runtime": "python3.11",
+                "buildCommand": "pip install -r requirements.txt"
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "blog/wsgi.py"
+        }
+    ]
+}
