@@ -33,7 +33,7 @@
                     </div>
                     <h3><a href="{% url 'detail' story.id %}">{{ story.title }}</a></h3>
                     <p>
-                        {{ story.content }}
+                        {{ story.content | safe }}
                     </p>
                     <div class="tags">
 

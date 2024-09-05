@@ -33,7 +33,7 @@ def index(request):
 def create(request):
     if request.method == 'POST':
         title = request.POST['title']
-        content = request.POST['content']
+        content = validate_text(request.POST['content'])
         tag = request.POST.getlist('tag')
 
         if not title or not content or not tag:
@@ -114,9 +114,9 @@ def like(request, story_id):
 @login_required
 def comment(request, obj_id):
     if request.method == 'POST':
-        content = request.POST.get('comment', '').strip()
+        data = request.POST.get('comment', '').strip()
 
-        content = validate_comment(content)
+        content = validate_text(data)
 
         if not content:
             return HttpResponse(status=400)
@@ -165,7 +165,7 @@ def validate_title(request):
 
     story = Story.objects.filter(title=title).exists()
 
-    if not title.isalpha():
+    if not title.isalnum():
         return HttpResponse("<p id='error-title' style='color: red;'>Invalid Title</p>")
     if story:
         return HttpResponse("<p id='error-title' style='color: red;'>Title already exists</p>")
@@ -174,12 +174,9 @@ def validate_title(request):
 
 
 def validate_content(request):
-    content = request.POST.get('content', '').strip()
+    content = request.POST.get('content', '').replace(" ", "").strip()
 
     if not content:
-        return HttpResponse("<p id='error-content' style='color: red;'>Invalid content</p>")
-
-    if not content.isalpha():
         return HttpResponse("<p id='error-content' style='color: red;'>Invalid content</p>")
 
     return HttpResponse("<p id='error-content' style='color: red;'></p>")
@@ -194,7 +191,6 @@ def validate_tag(request):
     return HttpResponse("<p id='error-tag' style='color: red;'></p>")
 
 
-
-def validate_comment(content: str) -> str:
+def validate_text(content: str) -> str:
     # Escape the HTML entities to remove any malicious code or script
     return html.escape(content)
