@@ -80,7 +80,7 @@ def delete(request, story_id):
     user = request.user
     story = Story.objects.get(id=story_id)
 
-    if user != story.author:
+    if user != story.author and not request.user.is_staff:
         return HttpResponse(status=403)
 
     story.delete()
@@ -133,8 +133,8 @@ def comment(request, obj_id):
 
     if request.method == 'DELETE':
         comment_ = Comment.objects.get(id=obj_id)
+        if request.user != comment_.author and not request.user.is_staff:
 
-        if request.user != comment_.author:
             return HttpResponse(status=403)
 
         comment_.delete()
