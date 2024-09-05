@@ -39,7 +39,7 @@
                         </div>
                         <h3>{{ story.title }}</h3>
                         <p>
-                            {{ story.content }}
+                            {{ story.content | safe }}
                         </p>
                         <div class="tags">
 
@@ -101,7 +101,7 @@
                                         </div>
                                     </div>
                                     <p>
-                                        {{ comment.content }}
+                                        {{ comment.content | safe }}
                                     </p>
                                 </div>
                             {% endfor %}
@@ -129,6 +129,10 @@
         <script>
             document.addEventListener('htmx:configRequest', (event) => {
                 event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+            });
+
+            document.addEventListener('htmx:afterRequest', (event) => {
+                document.getElementById('comment').value = '';
             });
 
         </script>

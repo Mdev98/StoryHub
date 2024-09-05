@@ -67,9 +67,9 @@ def validate_email(request):
 
     if not re.match(email_regex, email):
         return HttpResponse('Invalid email address')
-    if User.objects.filter_(email=email).exists() and action == 'signup':
+    if User.objects.filter(email=email).exists() and action == 'signup':
         return HttpResponse('Email already exists')
-    if not User.objects.filter_(email=email).exists() and action == 'forgot-password':
+    if not User.objects.filter(email=email).exists() and action == 'forgot-password':
         return HttpResponse('Email does not exist')
 
     return HttpResponse('')
@@ -99,7 +99,7 @@ def validate_lname(request):
 def forgot_password(request):
     email = request.POST['email']
     if request.method == 'POST':
-        user = User.objects.filter_(email=email).first()
+        user = User.objects.filter(email=email).first()
         user.send_password_reset_email(request)
     return HttpResponse('Email Sent')
 
