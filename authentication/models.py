@@ -43,7 +43,7 @@ class User(AbstractUser):
         return self.username
 
     def is_admin(self):
-        return self.role == 'admin'
+        return self.is_staff
 
     def is_subscriber(self):
         return self.role == 'subscriber'

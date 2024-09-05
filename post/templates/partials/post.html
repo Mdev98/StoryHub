@@ -24,8 +24,14 @@
     </div>
     <div class="stats">
         <p>
-            <span>♥️</span>
-            <span id="story-like">{{ story.get_like_count }}</span> Likes
+                                    <span
+                                            hx-post="{% url 'like' story.id %}"
+                                            hx-trigger="click"
+                                            hx-target="#story-like-{{ story.id }}"
+                                            hx-swap="outerHTML"
+                                            class="like-btn"
+                                    >♥️</span>
+            <span id="story-like-{{ story.id }}">{{ story.get_like_count }}</span> Likes
         </p>
         <p>
             <span>💬</span>

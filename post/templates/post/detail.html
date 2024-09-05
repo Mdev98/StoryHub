@@ -87,7 +87,7 @@
                                             <span class="profile_name">{{ comment.author.get_full_name }}</span>
 
 
-                                            {% if request.user == comment_.author %}
+                                            {% if request.user == comment_.author or request.user.is_admin %}
 
                                                 <span class="close"
                                                       hx-delete="{% url 'comment' comment_.id %}"

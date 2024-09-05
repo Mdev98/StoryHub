@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=a=r-qaib=!l==wv78a$+c24unemqey78#g37)q96r7s@g!vau'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -77,16 +77,28 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'dmFLgiGotCzexxfqPwYZASkRpHOwvbTm',
-        'HOST': 'autorack.proxy.rlwy.net',
-        'PORT': '54818',
+if os.environ.get('DATABASE_URL'):
+    print('Using Heroku database')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'railway',
+            'USER': 'postgres',
+            'PASSWORD': 'dmFLgiGotCzexxfqPwYZASkRpHOwvbTm',
+            'HOST': 'autorack.proxy.rlwy.net',
+            'PORT': '54818',
+        }
     }
-}
+else:
+    print('Using local database')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
 
 
 # Password validation
