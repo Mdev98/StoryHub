@@ -76,27 +76,16 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-if os.environ.get('DATABASE_URL'):
-    print('Using Heroku database')
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'railway',
-            'USER': 'postgres',
-            'PASSWORD': 'dmFLgiGotCzexxfqPwYZASkRpHOwvbTm',
-            'HOST': 'autorack.proxy.rlwy.net',
-            'PORT': '54818',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'dmFLgiGotCzexxfqPwYZASkRpHOwvbTm',
+        'HOST': 'autorack.proxy.rlwy.net',
+        'PORT': '54818',
     }
-else:
-    print('Using local database')
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 
 
@@ -135,7 +124,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR.joinpath('static/')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
