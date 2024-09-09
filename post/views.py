@@ -1,32 +1,31 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, QueryDict
+from django.http import HttpResponse, StreamingHttpResponse
+from django.template.loader import get_template
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
 
 from .models import Story, Tag, Comment, Like
 
 import html
+import asyncio
 
 
 # Create your views here.
 @login_required
 def index(request):
-    user = request.user
-    if not user.is_authenticated:
-        return redirect('sign_in')
-
-    stories = Story.objects.order_by('-created_at')
-    tags = Tag.objects.all()
-
     top_stories = Story.get_top_stories()[0:5]
     most_popular_tag = Tag.get_most_popular_tag()[:5]
 
     return render(request, 'post/index.html', {
-        'stories': stories,
-        'tags': tags,
         'top_stories': top_stories,
         'most_popular_tag': most_popular_tag
     })
+
+
+def get_stories(request):
+    stories = Story.objects.order_by('-created_at')[:5]
+
+    return render(request, 'partials/stories.html', {'stories': stories})
 
 
 @login_required
@@ -134,7 +133,6 @@ def comment(request, obj_id):
     if request.method == 'DELETE':
         comment_ = Comment.objects.get(id=obj_id)
         if request.user != comment_.author and not request.user.is_staff:
-
             return HttpResponse(status=403)
 
         comment_.delete()

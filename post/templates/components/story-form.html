@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="story-form">
+    <h2>Share your story</h2>
+    <form
+            hx-trigger="submit"
+            hx-post="{% url 'create' %}"
+            hx-target="#list"
+            hx-swap="afterbegin">
+
+        <div class="form-group">
+
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title"
+                   hx-post="{% url 'validate-title' %}"
+                   hx-trigger="change"
+                   hx-sync="closest form:abort"
+                   hx-target="#error-title"
+                   hx-swap="outerHTML" required>
+            <p id="error-title" style="color: red;"></p>
+
+        </div>
+        <div class="form-group">
+
+            <label for="title">Story</label>
+            <textarea
+                    name="content" id="content"
+                    hx-post="{% url 'validate-content' %}"
+                    hx-trigger="change"
+                    hx-sync="closest form:abort"
+                    hx-target="#error-content"
+                    hx-swap="outerHTML" required>
+            </textarea>
+            <p id="error-content" style="color: red;"></p>
+        </div>
+        <div class="form-group">
+            <label for="tag">Tag</label>
+            <input type="text" id="tag" name="tag"
+                   hx-post="{% url 'validate-tag' %}"
+                   hx-trigger="change"
+                   hx-sync="closest form:abort"
+                   hx-target="#error-tag"
+                   hx-swap="outerHTML" required>
+            <p id="error-tag" style="color: red;"></p>
+        </div>
+        <button class="btn btn-submit disabled" id="submit-btn">Share</button>
+    </form>
+</div>

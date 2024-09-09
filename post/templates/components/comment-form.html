@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="comment-form">
+    <textarea name="comment" id="comment" required></textarea>
+    <button class="btn btn-submit"
+            hx-post="{% url 'comment' story.id %}"
+            hx-trigger="click"
+            hx-target="#comment-list"
+            hx-swap="afterbegin"
+            hx-include="#comment">Comment
+    </button>
+</div>

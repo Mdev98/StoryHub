@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="profile">
+    <img src="https://avatar.iran.liara.run/public" alt="Profile">
+    <span class="profile_name">{{ story.author.get_full_name }}</span>
+    {% if user == story.author or user.is_admin %}
+        <span class="close"
+              hx-delete="{% url 'delete' story.id %}"
+              hx-trigger="click"
+              hx-target="#story-item-{{ story.id }}"
+              hx-swap="innerHTML transition:true"
+        >&times;</span>
+    {% endif %}
+</div>

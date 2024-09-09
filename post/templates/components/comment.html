@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="comment" id="comment-item-{{ comment.id }}">
+    <div class="profile">
+        <div class="profile">
+            <img src="https://avatar.iran.liara.run/public" alt="Profile">
+            <span class="profile_name">{{ comment.author.get_full_name }}</span>
+
+
+            {% if request.user == comment.author or request.user.is_admin %}
+
+                <span class="close"
+                      hx-delete="{% url 'comment' comment.id %}"
+                      hx-trigger="click"
+                      hx-target="#comment-item-{{ comment.id }}"
+                      hx-swap="innerHTML transition:true"
+                >&times;</span>
+
+            {% endif %}
+
+        </div>
+    </div>
+    <p>
+        {{ comment.content | safe }}
+    </p>
+</div>

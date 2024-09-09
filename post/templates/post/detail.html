@@ -25,7 +25,6 @@
                         </svg>
 
                     </a>
-
                     <h2>Stories</h2>
                 </div>
 
@@ -33,77 +32,19 @@
 
 
                     <div class="story-item">
-                        <div class="profile">
-                            <img src="https://avatar.iran.liara.run/public" alt="Profile">
-                            <span class="profile_name">{{ story.author.get_full_name }}</span>
-                        </div>
+                       {% include 'components/user-profile.html' with user=request.user story=story %}
                         <h3>{{ story.title }}</h3>
-                        <p>
-                            {{ story.content | safe }}
-                        </p>
-                        <div class="tags">
-
-                            {% if story.get_tags %}
-                                <span># {{ story.get_tags }}</span>
-                            {% endif %}
-
-                        </div>
-                        <div class="stats">
-                            <p>
-                                    <span
-                                            hx-post="{% url 'like' story.id %}"
-                                            hx-trigger="click"
-                                            hx-target="#story-like-{{ story.id }}"
-                                            hx-swap="outerHTML"
-                                            class="like-btn"
-                                    >♥️</span>
-                                <span id="story-like-{{ story.id }}">{{ story.get_like_count }}</span> Likes
-                            </p>
-                            <p>
-                                <span>💬</span>
-                                <span>{{ story.get_comment_count }}</span> Comments
-                            </p>
-                        </div>
+                        <p>{{ story.content | safe }}</p>
+                        {% include 'components/story-tags.html' with story=story %}
+                        {% include 'components/story-stats.html' with story=story %}
                     </div>
 
                     <div class="story-comment">
                         <h3>Comments</h3>
-                        <div class="comment-form">
-                            <textarea name="comment" id="comment" required></textarea>
-                            <button class="btn btn-submit"
-                                    hx-post="{% url 'comment' story.id %}"
-                                    hx-trigger="click"
-                                    hx-target="#comment-list"
-                                    hx-swap="afterbegin"
-                                    hx-include="#comment">Comment
-                            </button>
-                        </div>
+                        {% include 'components/comment-form.html' with story=story %}
                         <div id="comment-list">
                             {% for comment in story.get_comments %}
-                                <div class="comment" id="comment-item-{{ comment.id }}">
-                                    <div class="profile">
-                                        <div class="profile">
-                                            <img src="https://avatar.iran.liara.run/public" alt="Profile">
-                                            <span class="profile_name">{{ comment.author.get_full_name }}</span>
-
-
-                                            {% if request.user == comment_.author or request.user.is_admin %}
-
-                                                <span class="close"
-                                                      hx-delete="{% url 'comment' comment_.id %}"
-                                                      hx-trigger="click"
-                                                      hx-target="#comment-item-{{ comment_.id }}"
-                                                      hx-swap="innerHTML transition:true"
-                                                >&times;</span>
-
-                                            {% endif %}
-
-                                        </div>
-                                    </div>
-                                    <p>
-                                        {{ comment.content | safe }}
-                                    </p>
-                                </div>
+                                {% include 'components/comment.html' with comment=comment %}
                             {% endfor %}
                         </div>
 
@@ -114,19 +55,14 @@
         </section>
 
         <aside class="categories">
-            <div class="top">
-                <h2>Top Cas</h2>
-                <ul>
-
-                    {% for story in top_stories %}
-                        <li>
-                            <a href="{% url 'detail' story.id %}">{{ story.title }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+                {% include 'components/top-stories.html' with top_stories=top_stories %}
         </aside>
-        <script>
+
+    </main>
+{% endblock %}
+
+{% block script %}
+    <script>
             document.addEventListener('htmx:configRequest', (event) => {
                 event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
             });
@@ -135,6 +71,5 @@
                 document.getElementById('comment').value = '';
             });
 
-        </script>
-    </main>
+    </script>
 {% endblock %}

@@ -19,45 +19,13 @@
             {% for story in stories %}
 
                 <div class="story-item" id="story-item-{{ story.id }}">
-                    <div class="profile">
-                        <img src="https://avatar.iran.liara.run/public" alt="Profile">
-                        <span class="profile_name">{{ story.author.get_full_name }}</span>
-                        {% if request.user == story.author %}
-                            <span class="close"
-                                  hx-delete="{% url 'delete' story.id %}"
-                                  hx-trigger="click"
-                                  hx-target="#story-item-{{ story.id }}"
-                                  hx-swap="innerHTML transition:true"
-                            >&times;</span>
-                        {% endif %}
-                    </div>
+                    {% include 'components/user-profile.html' with user=request.user story=story %}
                     <h3><a href="{% url 'detail' story.id %}">{{ story.title }}</a></h3>
                     <p>
                         {{ story.content | safe }}
                     </p>
-                    <div class="tags">
-
-                        {% if story.get_tags %}
-                            <span># {{ story.get_tags }}</span>
-                        {% endif %}
-
-                    </div>
-                    <div class="stats">
-                        <p>
-                                    <span
-                                            hx-post="{% url 'like' story.id %}"
-                                            hx-trigger="click"
-                                            hx-target="#story-like-{{ story.id }}"
-                                            hx-swap="outerHTML"
-                                            class="like-btn"
-                                    >♥️</span>
-                            <span id="story-like-{{ story.id }}">{{ story.get_like_count }}</span> Likes
-                        </p>
-                        <p>
-                            <span>💬</span>
-                            <span>{{ story.get_comment_count }}</span> Comments
-                        </p>
-                    </div>
+                    {% include 'components/story-tags.html' with story=story %}
+                    {% include 'components/story-stats.html' with story=story %}
                 </div>
             {% endfor %}
         </div>
@@ -66,33 +34,6 @@
 </section>
 
 <aside class="categories">
-    <div class="tags">
-        <h2>Tags</h2>
-        <ul>
-
-            {% for tag in most_popular_tag %}
-                {% if tag.get_story_count > 0 %}
-                    <li>
-                        <a
-                                hx-get="{% url 'list-by' tag.slug %}"
-                                hx-trigger="click"
-                                hx-target="#filter-by"
-                                hx-swap="innerHTML"
-                        ># {{ tag.name }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="top">
-        <h2>Top Cas</h2>
-        <ul>
-
-            {% for story in top_stories %}
-                <li>
-                    <a href="{% url 'detail' story.id %}">{{ story.title }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% include 'components/tags.html' with most_popular_tag=most_popular_tag %}
+    {% include 'components/top-stories.html' with top_stories=top_stories %}
 </aside>

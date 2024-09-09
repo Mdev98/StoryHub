@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="tags">
+    <h2>Tags</h2>
+    <ul>
+
+        {% for tag in most_popular_tag %}
+            {% if tag.get_story_count > 0 %}
+                <li>
+                    <a
+                            hx-get="{% url 'list-by' tag.slug %}"
+                            hx-trigger="click"
+                            hx-target="#filter-by"
+                            hx-swap="innerHTML"
+                    ># {{ tag.name }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>

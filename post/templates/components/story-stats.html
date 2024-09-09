@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="stats">
+    <p>
+        <span
+            hx-post="{% url 'like' story.id %}"
+            hx-trigger="click"
+            hx-target="#story-like-{{ story.id }}"
+            hx-swap="outerHTML"
+            class="like-btn"
+        >♥️</span>
+        <span id="story-like-{{ story.id }}">{{ story.get_like_count }}</span>
+        <span>Likes</span>
+    </p>
+    <p>
+        <span>💬</span>
+        <span>{{ story.get_comment_count }}</span>
+        <span>Comments</span>
+    </p>
+</div>
