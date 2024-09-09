@@ -79,7 +79,8 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
-if os.getenv('DATABASE_USER'):
+if os.getenv('ENV') == 'production':
+    print('Using remote database')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -92,7 +93,7 @@ if os.getenv('DATABASE_USER'):
     }
 
 else:
-    # use sqlite for local development
+    print('Using local database')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

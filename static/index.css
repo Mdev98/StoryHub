@@ -271,6 +271,23 @@ main {
     animation: dispear 1s ease 0s 1 normal forwards;
 }
 
+.user_info {
+    width: 25%;
+}
+
+.user_info div {
+    margin-top: 90px;
+    padding: 5px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user_info p {
+    margin: 10px 0px;
+}
+
+.user_info span:first-child {
+    font-weight: bold;
+}
 
 /* ANIMATION */
 

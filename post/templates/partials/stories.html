@@ -1,16 +1,5 @@
 {% for story in stories %}
 
-    <div class="story-item" id="story-item-{{ story.id }}">
-
-        {% include 'components/user-profile.html' with user=request.user story=story %}
-
-        <h3><a href="{% url 'detail' story.id %}">{{ story.title }}</a></h3>
-
-        <p>{{ story.content | safe }}</p>
-
-        {% include 'components/story-tags.html' with story=story %}
-
-        {% include 'components/story-stats.html' with story=story %}
-    </div>
+    {% include 'components/story.html' with story=story %}
 
 {% endfor %}

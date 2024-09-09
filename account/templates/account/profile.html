@@ -1,16 +1,40 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block title %}Profile{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static './index.css' %}">
+{% endblock %}
+{% block header %}
+    {% include 'components/index-header.html' %}
+{% endblock %}
 {% block content %}
+    <main>
+        <section class="empty"></section>
+        <section class="story">
+            <div class="story-list">
+                <h2>Stories</h2>
+                <div id="list">
+                    {% for story in stories %}
+                        {% include 'components/story.html' with story=story %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <aside class="user_info">
+            <div>
+                <h1>Hello, {{ request.user.get_full_name }}</h1>
+                <p>
+                    <span>Stories : </span><span>{{ story_count }}</span>
+                </p>
+                <p>
+                    <span>Likes : </span><span>{{ likes_count }}</span>
+                </p>
+                <p>
+                    <span>Most liked story : </span><span>{{ top_story }}</span>
+                </p>
+            </div>
+
+        </aside>
+    </main>
     <div>
-    <h1>Hello, {{ request.user.get_full_name }}</h1>
-    <p>Your role : {{ request.user.role }}</p>
-    <a href="{% url 'sign-out' %}">Logout</a>
-    </div>
-    <div>
-    <h2>Stories</h2>
-    <ul>
-        {% for story in stories %}
-            <li>{{ story.title }}</li>
-        {% endfor %}
-    </ul>
-    </div>
 {% endblock %}

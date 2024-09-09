@@ -2,16 +2,27 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 
+from authentication.models import User
 from post.models import Story
 
 
 # Create your views here.
 
 @login_required
-def profile(request):
-    stories = Story.objects.filter(author=request.user)
+def profile(request, username):
+    user_id = User.objects.get(username=username).id
+    stories = Story.objects.filter(author=user_id)
+    likes_count = 0
+    story_count = stories.count()
+    for story in stories:
+        likes_count = story.get_like_count()
 
-    return render(request, 'account/profile.html', {'stories': stories})
+    #  get the most liked story from the user stories
+    top_story = Story.get_top_stories().filter(author=user_id).first()
+    print(top_story)
+
+    return render(request, 'account/profile.html',
+                  {'stories': stories, 'likes_count': likes_count, 'story_count': story_count, 'top_story': top_story})
 
 
 def settings(request):

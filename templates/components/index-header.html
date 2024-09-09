@@ -13,7 +13,7 @@
             </button>
             <div class="dropdown">
                 <ul>
-                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'profile' request.user.username %}">Profile</a></li>
                     <li><a id="danger" href="{% url 'sign-out' %}">Logout</a></li>
                 </ul>
             </div>

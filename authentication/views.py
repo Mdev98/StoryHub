@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
@@ -20,10 +22,13 @@ def sign_up(request):
         email = request.POST['email']
         password = request.POST['password']
 
+        # get timestamp
+        timestamp = datetime.now().timestamp()
+
         user = User.objects.create_user(
             first_name=f_name,
             last_name=l_name,
-            username=email,
+            username=f_name + str(timestamp),
             email=email,
             password=password
         )
