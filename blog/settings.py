@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
-    'post'
+    'post',
+    'account'
 ]
 
 MIDDLEWARE = [
@@ -77,20 +78,21 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-if os.environ.get('DATABASE_URL'):
-    print('Using Heroku database')
+
+if os.getenv('DATABASE_USER'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'railway',
-            'USER': 'postgres',
-            'PASSWORD': 'dmFLgiGotCzexxfqPwYZASkRpHOwvbTm',
-            'HOST': 'autorack.proxy.rlwy.net',
-            'PORT': '54818',
+            'NAME': 'koyebdb',
+            'USER': 'koyeb-adm',
+            'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+            'HOST': os.getenv('DATABASE_HOST'),
+            'OPTIONS': {'sslmode': 'require'},
         }
     }
+
 else:
-    print('Using local database')
+    # use sqlite for local development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
