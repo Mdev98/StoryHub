@@ -1,49 +1,78 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block title %}Settings{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static './index.css' %}">
+{% endblock %}
+{% block header %}
+    {% include 'components/index-header.html' %}
+{% endblock %}
 {% block content %}
-    <h1>Settings</h1>
-    <p id="message">
-    </p>
-    <input type="hidden" name="first_name" id="first_name" value="{{ request.user.first_name }}">
-    <input type="hidden" name="last_name" id="last_name" value="{{ request.user.last_name }}">
-    <p
-            hx-post="{% url 'update-name' %}"
-            hx-trigger="focusout delay:500ms"
-            hx-swap="innerHTML"
-            contenteditable="true"
-            hx-include="#first_name"
-            oninput="document.getElementById('first_name').value = this.innerText"
-    >
-        {{ request.user.first_name }}
-    </p>
 
-    <p
+    <h1 style="text-align: center; margin-top: 80px">Settings</h1>
+    <p id="message" style="text-align: center; color: #C80036"></p>
 
-            hx-post="{% url 'update-name' %}"
-            hx-trigger="focusout delay:500ms"
-            hx-swap="innerHTML"
-            contenteditable="true"
-            hx-include="#last_name"
-            oninput="document.getElementById('last_name').value = this.innerText"
 
-    >
-        {{ request.user.last_name }}
-    </p>
-    <p>{{ request.user.email }}</p>
-    <form method="post">
-        {% csrf_token %}
+    <section class="configuration">
 
-        <label for="password">Change Password</label>
-        <input type="password" name="password" id="password" placeholder="**********">
-        <button
-                hx-post="{% url 'update-password' %}"
-                hx-trigger="click"
-                hx-swap="innerHTML"
-                hx-target="#message"
-                hx-include="#password"
-        >update
-        </button>
-    </form>
 
+        <div>
+            <input type="hidden" name="first_name" id="first_name" value="{{ request.user.first_name }}">
+            <span style="font-weight: bold; font-size: 1.2rem">First Name : </span>
+            <p
+                    hx-post="{% url 'update-name' %}"
+                    hx-trigger="focusout delay:500ms"
+                    hx-swap="innerHTML"
+                    contenteditable="true"
+                    hx-include="#first_name"
+                    oninput="document.getElementById('first_name').value = this.innerText"
+            >
+                {{ request.user.first_name }}
+            </p>
+        </div>
+
+        <div>
+            <input type="hidden" name="last_name" id="last_name" value="{{ request.user.last_name }}">
+            <span style="font-weight: bold; font-size: 1.2rem">Last Name : </span>
+
+            <p
+
+                    hx-post="{% url 'update-name' %}"
+                    hx-trigger="focusout delay:500ms"
+                    hx-swap="innerHTML"
+                    contenteditable="true"
+                    hx-include="#last_name"
+                    oninput="document.getElementById('last_name').value = this.innerText"
+
+            >
+                {{ request.user.last_name }}
+            </p>
+        </div>
+        <div>
+            <span style="font-weight: bold; font-size: 1.2rem">Email : </span>
+            <p>{{ request.user.email }}</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="password" style="font-weight: bold; font-size: 1.2rem; display: block">Change Password</label>
+            <input type="password" name="password" id="password" placeholder="**********">
+            <button
+                    hx-post="{% url 'update-password' %}"
+                    hx-trigger="click"
+                    hx-swap="innerHTML"
+                    hx-target="#message"
+                    hx-include="#password"
+                    class="btn btn-update"
+            >update
+            </button>
+        </form>
+
+
+    </section>
+{% endblock %}
+
+{% block script %}
     <script>
         document.addEventListener('htmx:configRequest', (event) => {
             event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';

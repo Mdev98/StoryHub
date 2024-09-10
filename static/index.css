@@ -50,7 +50,7 @@ header {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -100px;
+    bottom: -140px;
     animation: entrance 2s ease 0s 1 normal forwards;
 }
 
@@ -289,6 +289,33 @@ main {
     font-weight: bold;
 }
 
+.configuration {
+    width: 800px;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.configuration form input {
+    padding: 10px 20px;
+    border: none;
+    border-bottom: 2px solid black;
+    outline: none;
+}
+
+.btn-update {
+    background-color: #111;
+    color: #fff;
+    border: 1px solid #111;
+    transition: all 0.3s ease;
+}
+
+.btn-update:hover {
+    background-color: #fff;
+    color: #111;
+}
+
 /* ANIMATION */
 
 @keyframes fadeIn {
@@ -382,4 +409,31 @@ main {
 		animation-timing-function: ease-out;
 		transform: translateY(0);
 	}
+}
+
+@media screen and (max-width: 768px) {
+
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+    main {
+        padding: 20px 50px;
+        flex-direction: column-reverse;
+    }
+
+    .categories {
+        display: none;
+    }
+
+    .story {
+        width: fit-content;
+    }
+
+    .user_info {
+        width: fit-content;
+    }
+
+    .user_info div {
+        margin-top: 20px;
+    }
 }

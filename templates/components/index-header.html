@@ -1,6 +1,8 @@
 <header>
     <div class="logo">
-        <h1>StoryHub</h1>
+        <h1>
+            <a href="{% url 'index' %}">StoryHub</a>
+        </h1>
     </div>
     <div class="settings">
         <div class="profile" tabindex="0">
@@ -14,6 +16,7 @@
             <div class="dropdown">
                 <ul>
                     <li><a href="{% url 'profile' request.user.username %}">Profile</a></li>
+                    <li><a href="{% url 'settings' %}">settings</a></li>
                     <li><a id="danger" href="{% url 'sign-out' %}">Logout</a></li>
                 </ul>
             </div>
