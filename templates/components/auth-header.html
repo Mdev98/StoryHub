@@ -3,6 +3,11 @@
         <h1>StoryHub</h1>
     </div>
     <div class="action">
-        <a href="{% url 'sign-up' %}" class="btn btn-action">{{ action }}</a>
+        
+        {% if action == 'Login' %}
+            <a href="{% url 'sign-in' %}" class="btn btn-action">{{ action }}</a>
+        {% else %}
+            <a href="{% url 'sign-up' %}" class="btn btn-action">{{ action }}</a>
+        {% endif %}
     </div>
 </header>
